@@ -72,7 +72,7 @@ class NovaPermissionTool extends Tool
         }
 
         return MenuSection::make(
-            'Roles & Permissions',
+            __('nova-permission-tool::navigation.sidebar-label'),
             $menu,
             'lock-open'
         );
