@@ -39,6 +39,13 @@ class Role extends Resource
         'name',
     ];
 
+    /**
+     * Indicates if the resource should be displayed in the sidebar.
+     *
+     * @var bool
+     */
+    public static $displayInNavigation = false;
+
     public static function getModel()
     {
         return app(PermissionRegistrar::class)->getRoleClass();

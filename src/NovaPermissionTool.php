@@ -3,6 +3,9 @@
 namespace Vyuldashev\NovaPermission;
 
 use Gate;
+use Illuminate\Http\Request;
+use Laravel\Nova\Menu\MenuSection;
+use Laravel\Nova\Menu\MenuItem;
 use Laravel\Nova\Nova;
 use Laravel\Nova\Tool;
 
@@ -51,10 +54,22 @@ class NovaPermissionTool extends Tool
         return $this;
     }
 
-    public function permissionPolicy(string $permissionPolicy)
+    public function permissionPolicy(string $permissionPolicy): NovaPermissionTool
     {
         $this->permissionPolicy = $permissionPolicy;
 
         return $this;
+    }
+
+    public function menu(Request $request)
+    {
+        return MenuSection::make(
+            'Roles & Permissions',
+            [
+                MenuItem::resource($this->roleResource),
+                MenuItem::resource($this->permissionResource)
+            ],
+            'lock-open'
+        );
     }
 }
