@@ -51,27 +51,6 @@ class Role extends Resource
         return app(PermissionRegistrar::class)->getRoleClass();
     }
 
-    /**
-     * Get the logical group associated with the resource.
-     *
-     * @return string
-     */
-    public static function group()
-    {
-        return __('nova-permission-tool::navigation.sidebar-label');
-    }
-
-    /**
-     * Determine if this resource is available for navigation.
-     *
-     * @param Request $request
-     * @return bool
-     */
-    public static function availableForNavigation(Request $request)
-    {
-        return Gate::allows('viewAny', app(PermissionRegistrar::class)->getRoleClass());
-    }
-
     public static function label()
     {
         return __('nova-permission-tool::resources.Roles');

@@ -63,12 +63,17 @@ class NovaPermissionTool extends Tool
 
     public function menu(Request $request)
     {
+        $menu = [];
+        if (Gate::allows('viewAny', Permission::getModel())) {
+            array_push($menu, MenuItem::resource($this->permissionResource));
+        }
+        if (Gate::allows('viewAny', Role::getModel())) {
+            array_push($menu, MenuItem::resource($this->roleResource));
+        }
+
         return MenuSection::make(
             'Roles & Permissions',
-            [
-                MenuItem::resource($this->roleResource),
-                MenuItem::resource($this->permissionResource)
-            ],
+            $menu,
             'lock-open'
         );
     }

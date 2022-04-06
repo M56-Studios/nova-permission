@@ -3,7 +3,6 @@
 namespace Vyuldashev\NovaPermission;
 
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Gate;
 use Illuminate\Validation\Rule;
 use Laravel\Nova\Fields\DateTime;
 use Laravel\Nova\Fields\ID;
@@ -49,27 +48,6 @@ class Permission extends Resource
     public static function getModel()
     {
         return app(PermissionRegistrar::class)->getPermissionClass();
-    }
-
-    /**
-     * Get the logical group associated with the resource.
-     *
-     * @return string
-     */
-    public static function group(): string
-    {
-        return __('nova-permission-tool::navigation.sidebar-label');
-    }
-
-    /**
-     * Determine if this resource is available for navigation.
-     *
-     * @param Request $request
-     * @return bool
-     */
-    public static function availableForNavigation(Request $request): bool
-    {
-        return Gate::allows('viewAny', app(PermissionRegistrar::class)->getPermissionClass());
     }
 
     public static function label()
