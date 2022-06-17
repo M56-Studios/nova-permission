@@ -104,8 +104,8 @@ class Role extends Resource
 
             Text::make(__('nova-permission-tool::roles.name'), 'name')
                 ->rules(['required', 'string', 'max:255'])
-                ->creationRules('unique:'.config('permission.table_names.roles'))
-                ->updateRules('unique:'.config('permission.table_names.roles').',name,{{resourceId}}'),
+                ->creationRules('unique:' . config('permission.table_names.roles'))
+                ->updateRules('unique:' . config('permission.table_names.roles') . ',name,{{resourceId}}'),
 
             Select::make(__('nova-permission-tool::roles.guard_name'), 'guard_name')
                 ->options($guardOptions->toArray())
@@ -114,7 +114,8 @@ class Role extends Resource
             DateTime::make(__('nova-permission-tool::roles.created_at'), 'created_at')->exceptOnForms(),
             DateTime::make(__('nova-permission-tool::roles.updated_at'), 'updated_at')->exceptOnForms(),
 
-            PermissionBooleanGroup::make(__('nova-permission-tool::roles.permissions'), 'permissions'),
+            PermissionBooleanGroup::make(__('nova-permission-tool::roles.permissions'), 'permissions')
+                ->hideFromIndex(),
 
             MorphToMany::make($userResource::label(), 'users', $userResource)
                 ->searchable()

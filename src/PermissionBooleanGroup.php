@@ -24,11 +24,15 @@ class PermissionBooleanGroup extends BooleanGroup
             }
         );
 
-        $permissionClass = app(PermissionRegistrar::class)->getPermissionClass();
+        $options = [];
 
-        $options = $permissionClass::all()->filter(function ($permission) {
-            return Auth::user()->can('view', $permission);
-        })->pluck($labelAttribute ?? 'name', 'name');
+        if (!app(NovaRequest::class)->isResourceIndexRequest()) {
+            $permissionClass = app(PermissionRegistrar::class)->getPermissionClass();
+
+            $options = $permissionClass::all()->filter(function ($permission) {
+                return Auth::user()->can('view', $permission);
+            })->pluck($labelAttribute ?? 'name', 'name');
+        }
 
         $this->options($options);
     }
@@ -41,7 +45,7 @@ class PermissionBooleanGroup extends BooleanGroup
      */
     protected function fillAttributeFromRequest(NovaRequest $request, $requestAttribute, $model, $attribute)
     {
-        if (! $request->exists($requestAttribute)) {
+        if (!$request->exists($requestAttribute)) {
             return;
         }
 
