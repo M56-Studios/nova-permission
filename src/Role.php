@@ -49,9 +49,36 @@ class Role extends Resource
         'permissions',
     ];
 
-    public static function getModel()
+    /**
+     * Create a new resource instance.
+     *
+     * @param  TModel|null  $resource
+     * @return void
+     */
+    public function __construct($resource = null)
     {
-        return app(PermissionRegistrar::class)->getRoleClass();
+        static::$model = static::getModel();
+        $this->resource = $resource;
+    }
+
+    /**
+     * The model the resource corresponds to.
+     *
+     * @return string
+     */
+    public static function getModel(): string
+    {
+        $roleClass = app(PermissionRegistrar::class)->getRoleClass();
+
+        return is_string($roleClass) ? $roleClass : get_class($roleClass);
+    }
+
+    /**
+     * An object instance of the model the resource corresponds to.
+     */
+    public static function getObject()
+    {
+        return app(static::getModel());
     }
 
     /**
@@ -97,7 +124,7 @@ class Role extends Resource
             return [$key => $key];
         });
 
-        $userResource = Nova::resourceForModel(getModelForGuard($this->guard_name));
+        $userResource = Nova::resourceForModel(getModelForGuard($this->guard_name ?? config('auth.defaults.guard')));
 
         return [
             ID::make()->sortable(),
@@ -165,5 +192,20 @@ class Role extends Resource
     public function actions(NovaRequest $request)
     {
         return [];
+    }
+
+    /**
+     *
+     * Allow the permissions to replicate with the Role
+     *
+     * @return Role|HigherOrderTapProxy|mixed
+     */
+    public function replicate()
+    {
+        return tap(parent::replicate(), function ($resource) {
+            $model = $resource->model();
+            $model->name = 'Duplicate of '.$model->name;
+            $model->permissions = parent::model()->permissions;
+        });
     }
 }

@@ -49,9 +49,28 @@ class Permission extends Resource
         'roles',
     ];
 
-    public static function getModel()
+    /**
+     * Create a new resource instance.
+     *
+     * @param  TModel|null  $resource
+     * @return void
+     */
+    public function __construct($resource = null)
     {
-        return app(PermissionRegistrar::class)->getPermissionClass();
+        static::$model = static::getModel();
+        $this->resource = $resource;
+    }
+
+    /**
+     * The model the resource corresponds to.
+     *
+     * @return string
+     */
+    public static function getModel(): string
+    {
+        $permissionClass = app(PermissionRegistrar::class)->getPermissionClass();
+
+        return is_string($permissionClass) ? $permissionClass : get_class($permissionClass);
     }
 
     /**
@@ -97,7 +116,7 @@ class Permission extends Resource
             return [$key => $key];
         });
 
-        $userResource = Nova::resourceForModel(getModelForGuard($this->guard_name));
+        $userResource = Nova::resourceForModel(getModelForGuard($this->guard_name ?? config('auth.defaults.guard')));
 
         return [
             ID::make()->sortable(),
